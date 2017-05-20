@@ -9,11 +9,13 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-class GameForm {
+public class GameForm {
 
     private Game game;
     private Stage primaryStage;
     private Canvas canvas;
+    public static final int WIDTH = 200;
+    public static final int HEIGHT = 400;
 
     GameForm(Game game, Stage primaryStage) {
         this.game = game;
@@ -22,9 +24,9 @@ class GameForm {
     }
 
     private void initialize() {
-        canvas = new Canvas(200, 200);
+        canvas = new Canvas(WIDTH, HEIGHT);
         BorderPane gameForm = new BorderPane(canvas);
-        Scene scene = new Scene(gameForm, 800, 600, Color.LIGHTBLUE);
+        Scene scene = new Scene(gameForm, 400, 600, Color.LIGHTBLUE);
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent event) {

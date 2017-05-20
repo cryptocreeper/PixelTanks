@@ -15,7 +15,7 @@ public class GameStateManager {
 
     public GameStateManager() {
         gameStates = new GameState[NUMBER_OF_GAME_STATES];
-        currentState = MENU_STATE;
+        currentState = LEVEL_STATE;
         loadState(currentState);
     }
 
@@ -43,13 +43,17 @@ public class GameStateManager {
     public void update() {
         try {
             gameStates[currentState].update();
-        } catch(Exception e) {}
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void draw(GraphicsContext graphicsContext) {
         try {
             gameStates[currentState].draw(graphicsContext);
-        } catch(Exception e) {}
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -1,25 +1,28 @@
 package stateManagement.states;
 
 import javafx.scene.canvas.GraphicsContext;
-import stateManagement.GameState;
-import stateManagement.GameStateManager;
+import map.Map;
+import stateManagement.*;
 
 public class LevelState extends GameState {
 
+    private Map map;
+
     public LevelState(GameStateManager gameStateManager) {
         this.gameStateManager = gameStateManager;
+        init();
     }
 
     public void init() {
-
+        map = new Map("/tileSets/tileSet.png", "/maps/level.map", 0, 0);
     }
 
     public void update() {
-        System.out.println("Update LevelState");
+
     }
 
     public void draw(GraphicsContext graphicsContext) {
-        System.out.println("Display LevelState");
+        map.draw(graphicsContext);
     }
 
     public void keyPressed(int k) {
