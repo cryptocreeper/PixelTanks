@@ -1,56 +1,49 @@
-package map;
+package gameObjects.tileSet;
 
-import game.GameForm;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
-public class Map {
+public abstract class TileSet {
+
+    private Tile[][] tileSet;
 
     // position
-    private double x;
-    private double y;
-
-    // map
-    private int[][] map;
-    private int numberOfRows;
-    private int numberOfColumns;
+    private int x;
+    private int y;
 
     // tile set image
     private Image tileSetImage;
-    private Tile[][] tiles;
     private int columnsInTileSetImage;
     private int rowsInTileSetImage;
 
-    // drawing
-    private int rowOffset;
-    private int columnOffset;
-    private int numberRowsToDraw;
-    private int numberColsToDraw;
+    // numericMatrix
+    private int[][] numericMatrix;
+    private int width;
+    private int height;
 
-    public Map(String tileSetImagePath, String tileMapPath, int xPosition, int yPosition) {
+    public TileSet(String tileSetImagePath, String tileMapPath) {
         initialize(tileSetImagePath, tileMapPath);
-        setPosition(xPosition, yPosition);
     }
 
     private void initialize(String tileSetImagePath, String tileMapPath) {
-        numberRowsToDraw = GameForm.HEIGHT / Tile.SIZE;
-        numberColsToDraw = GameForm.WIDTH / Tile.SIZE;
-
         tileSetImage = new Image(getClass().getResourceAsStream(tileSetImagePath));
         columnsInTileSetImage = (int)(tileSetImage.getWidth() / Tile.SIZE);
         rowsInTileSetImage = (int)(tileSetImage.getHeight() / Tile.SIZE);
-        tiles = new Tile[rowsInTileSetImage][columnsInTileSetImage];
+        tileSet = new Tile[rowsInTileSetImage][columnsInTileSetImage];
 
         InputStream inputStream = getClass().getResourceAsStream(tileMapPath);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         try {
-            numberOfColumns = Integer.parseInt(bufferedReader.readLine());
-            numberOfRows = Integer.parseInt(bufferedReader.readLine());
-            map = new int[numberOfRows][numberOfColumns];
+            width = Integer.parseInt(bufferedReader.readLine());
+            height = Integer.parseInt(bufferedReader.readLine());
+            numericMatrix = new int[height][width];
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -71,7 +64,7 @@ public class Map {
                             column * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE,
                             0, 0, Tile.SIZE, Tile.SIZE);
                     tileImage = tileCanvas.snapshot(null, new WritableImage(Tile.SIZE, Tile.SIZE));
-                    tiles[row][column] = new Tile(tileImage, row);
+                    tileSet[row][column] = new Tile(tileImage, row);
                 }
             }
         }
@@ -83,12 +76,12 @@ public class Map {
     private void loadMap(BufferedReader bufferedReader) {
         try {
             String delimiter = "\\s+";
-            for (int row = 0; row < numberOfRows; row++) {
+            for (int row = 0; row < height; row++) {
                 String line = bufferedReader.readLine();
                 String[] tokens = line.split(delimiter);
 
-                for (int column = 0; column < numberOfColumns; column++) {
-                    map[row][column] = Integer.parseInt(tokens[column]);
+                for (int column = 0; column < width; column++) {
+                    numericMatrix[row][column] = Integer.parseInt(tokens[column]);
                 }
             }
         }
@@ -97,43 +90,24 @@ public class Map {
         }
     }
 
-    public double getx() {
-        return x;
-    }
-
-    public double gety() {
-        return y;
-    }
-
-    public int getTileType(int mapRow, int mapColumn) {
-        return getTile(mapRow, mapColumn).getType();
-    }
-
-    private Tile getTile(int mapRow, int mapColumn) {
-        int tileCode = map[mapRow][mapColumn];
+    private Tile getTile(int tileSetRow, int tileSetColumn) {
+        int tileCode = numericMatrix[tileSetRow][tileSetColumn];
         int tilesRow = tileCode / columnsInTileSetImage;
         int tilesColumn = tileCode % columnsInTileSetImage;
-        return tiles[tilesRow][tilesColumn];
+        return tileSet[tilesRow][tilesColumn];
     }
 
-    private void setPosition(double x, double y) {
+    public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
-
-        columnOffset = (int)-this.x / Tile.SIZE;
-        rowOffset = (int)-this.y / Tile.SIZE;
     }
 
     public void draw(GraphicsContext graphicsContext) {
-        for(int mapRow = rowOffset; mapRow < rowOffset + numberRowsToDraw; mapRow++) {
-            if(mapRow >= numberOfRows) break;
-
-            for(int mapColumn = columnOffset; mapColumn < columnOffset + numberColsToDraw; mapColumn++) {
-                if(mapColumn >= numberOfColumns) break;
-
-                Tile tile = getTile(mapRow, mapColumn);
+        for(int row = 0; row < height; row++) {
+            for(int column = 0; column < width; column++) {
+                Tile tile = getTile(row, column);
                 graphicsContext.drawImage(tile.getImage(),
-                        (int)x + mapColumn * Tile.SIZE, (int)y + mapRow * Tile.SIZE);
+                        (x + column) * Tile.SIZE, (y + row) * Tile.SIZE);
             }
         }
     }

@@ -1,12 +1,14 @@
 package stateManagement.states;
 
 import javafx.scene.canvas.GraphicsContext;
-import map.Map;
+import gameObjects.GameMap;
+import gameObjects.Player;
 import stateManagement.*;
 
 public class LevelState extends GameState {
 
-    private Map map;
+    private GameMap map;
+    private Player player;
 
     public LevelState(GameStateManager gameStateManager) {
         this.gameStateManager = gameStateManager;
@@ -14,7 +16,9 @@ public class LevelState extends GameState {
     }
 
     public void init() {
-        map = new Map("/tileSets/tileSet.png", "/maps/level.map", 0, 0);
+        map = new GameMap("/tileSets/tileSet.png", "/maps/level.map");
+        player = new Player("/tileSets/tileSet.png", "/maps/player.map");
+        player.setPosition(3, 17);
     }
 
     public void update() {
@@ -23,6 +27,7 @@ public class LevelState extends GameState {
 
     public void draw(GraphicsContext graphicsContext) {
         map.draw(graphicsContext);
+        player.draw(graphicsContext);
     }
 
     public void keyPressed(int k) {

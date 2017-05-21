@@ -1,4 +1,4 @@
-package map;
+package gameObjects.tileSet;
 
 import javafx.scene.image.Image;
 
