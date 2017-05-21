@@ -1,6 +1,7 @@
 package stateManagement;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import stateManagement.states.LevelState;
 import stateManagement.states.MenuState;
 
@@ -38,6 +39,14 @@ public class GameStateManager {
         unloadState(currentState);
         currentState = state;
         loadState(currentState);
+    }
+
+    public void keyPressed(KeyCode keyCode) {
+        gameStates[currentState].keyPressed(keyCode);
+    }
+
+    public void keyReleased(KeyCode keyCode) {
+        gameStates[currentState].keyReleased(keyCode);
     }
 
     public void update() {

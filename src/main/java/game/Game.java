@@ -2,6 +2,7 @@ package game;
 
 import javafx.application.Application;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import stateManagement.GameStateManager;
 
@@ -28,6 +29,14 @@ public class Game extends Application {
         gameLoop = new GameLoop(this);
         gameForm = new GameForm(this, primaryStage);
         graphicsContext = gameForm.getGraphicContext();
+    }
+
+    void keyPressed(KeyCode keyCode) {
+        gameStateManager.keyPressed(keyCode);
+    }
+
+    void keyReleased(KeyCode keyCode) {
+        gameStateManager.keyReleased(keyCode);
     }
 
     void update() {

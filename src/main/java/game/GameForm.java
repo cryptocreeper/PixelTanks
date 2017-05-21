@@ -4,6 +4,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -27,6 +28,16 @@ public class GameForm {
         canvas = new Canvas(WIDTH, HEIGHT);
         BorderPane gameForm = new BorderPane(canvas);
         Scene scene = new Scene(gameForm, 400, 600, Color.LIGHTBLUE);
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            public void handle(KeyEvent event) {
+                game.keyPressed(event.getCode());
+            }
+        });
+        scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            public void handle(KeyEvent event) {
+                game.keyReleased(event.getCode());
+            }
+        });
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent event) {

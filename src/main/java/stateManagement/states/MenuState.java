@@ -1,6 +1,7 @@
 package stateManagement.states;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import stateManagement.GameState;
 import stateManagement.GameStateManager;
 
@@ -22,11 +23,11 @@ public class MenuState extends GameState {
 
     }
 
-    public void keyPressed(int k) {
+    public void keyPressed(KeyCode keyCode) {
 
     }
 
-    public void keyReleased(int k) {
+    public void keyReleased(KeyCode keyCode) {
 
     }
 }

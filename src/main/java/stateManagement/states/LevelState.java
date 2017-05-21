@@ -3,6 +3,7 @@ package stateManagement.states;
 import javafx.scene.canvas.GraphicsContext;
 import gameObjects.GameMap;
 import gameObjects.Player;
+import javafx.scene.input.KeyCode;
 import stateManagement.*;
 
 public class LevelState extends GameState {
@@ -30,11 +31,13 @@ public class LevelState extends GameState {
         player.draw(graphicsContext);
     }
 
-    public void keyPressed(int k) {
-
+    public void keyPressed(KeyCode keyCode) {
+        if (keyCode == KeyCode.UP) System.out.println("pressed UP");
+        if (keyCode == KeyCode.DOWN) System.out.println("pressed DOWN");
     }
 
-    public void keyReleased(int k) {
-
+    public void keyReleased(KeyCode keyCode) {
+        if (keyCode == KeyCode.UP) System.out.println("released UP");
+        if (keyCode == KeyCode.DOWN) System.out.println("released DOWN");
     }
 }
