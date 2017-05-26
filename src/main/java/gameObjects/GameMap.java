@@ -1,9 +1,9 @@
 package gameObjects;
 
-import gameObjects.tileSet.TileSet;
+import gameObjects.tileSet.TileMatrix;
 import javafx.scene.canvas.GraphicsContext;
 
-public class GameMap extends TileSet {
+public class GameMap extends TileMatrix {
 
     public GameMap(String tileSetImagePath, String tileMapPath) {
         super(tileSetImagePath, tileMapPath);

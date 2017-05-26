@@ -9,25 +9,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public abstract class TileSet {
+public abstract class TileMatrix {
 
     private Tile[][] tileSet;
 
-    // position
-    private int x;
-    private int y;
+    // position in pixel
+    protected int x;
+    protected int y;
 
     // tile set image
     private Image tileSetImage;
     private int columnsInTileSetImage;
     private int rowsInTileSetImage;
 
-    // numericMatrix
-    private int[][] numericMatrix;
-    private int width;
-    private int height;
+    // numeric matrix
+    protected int[][] matrix;
+    protected int matrixWidth;
+    protected int matrixHeight;
 
-    public TileSet(String tileSetImagePath, String tileMapPath) {
+    public TileMatrix(String tileSetImagePath, String tileMapPath) {
         initialize(tileSetImagePath, tileMapPath);
     }
 
@@ -41,9 +41,9 @@ public abstract class TileSet {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         try {
-            width = Integer.parseInt(bufferedReader.readLine());
-            height = Integer.parseInt(bufferedReader.readLine());
-            numericMatrix = new int[height][width];
+            matrixWidth = Integer.parseInt(bufferedReader.readLine());
+            matrixHeight = Integer.parseInt(bufferedReader.readLine());
+            matrix = new int[matrixHeight][matrixWidth];
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,12 +76,12 @@ public abstract class TileSet {
     private void loadMap(BufferedReader bufferedReader) {
         try {
             String delimiter = "\\s+";
-            for (int row = 0; row < height; row++) {
+            for (int row = 0; row < matrixHeight; row++) {
                 String line = bufferedReader.readLine();
                 String[] tokens = line.split(delimiter);
 
-                for (int column = 0; column < width; column++) {
-                    numericMatrix[row][column] = Integer.parseInt(tokens[column]);
+                for (int column = 0; column < matrixWidth; column++) {
+                    matrix[row][column] = Integer.parseInt(tokens[column]);
                 }
             }
         }
@@ -91,7 +91,7 @@ public abstract class TileSet {
     }
 
     private Tile getTile(int tileSetRow, int tileSetColumn) {
-        int tileCode = numericMatrix[tileSetRow][tileSetColumn];
+        int tileCode = matrix[tileSetRow][tileSetColumn];
         int tilesRow = tileCode / columnsInTileSetImage;
         int tilesColumn = tileCode % columnsInTileSetImage;
         return tileSet[tilesRow][tilesColumn];
@@ -103,11 +103,11 @@ public abstract class TileSet {
     }
 
     public void draw(GraphicsContext graphicsContext) {
-        for(int row = 0; row < height; row++) {
-            for(int column = 0; column < width; column++) {
-                Tile tile = getTile(row, column);
+        for(int matrixRow = 0; matrixRow < matrixHeight; matrixRow++) {
+            for(int matrixColumn = 0; matrixColumn < matrixWidth; matrixColumn++) {
+                Tile tile = getTile(matrixRow, matrixColumn);
                 graphicsContext.drawImage(tile.getImage(),
-                        (x + column) * Tile.SIZE, (y + row) * Tile.SIZE);
+                        (x / Tile.SIZE + matrixColumn) * Tile.SIZE, (y / Tile.SIZE + matrixRow) * Tile.SIZE);
             }
         }
     }

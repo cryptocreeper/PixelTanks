@@ -19,7 +19,7 @@ public class LevelState extends GameState {
     public void init() {
         map = new GameMap("/tileSets/tileSet.png", "/maps/level.map");
         player = new Player("/tileSets/tileSet.png", "/maps/player.map");
-        player.setPosition(3, 17);
+        player.setPosition(0, 0);
     }
 
     public void update() {
@@ -32,12 +32,16 @@ public class LevelState extends GameState {
     }
 
     public void keyPressed(KeyCode keyCode) {
-        if (keyCode == KeyCode.UP) System.out.println("pressed UP");
-        if (keyCode == KeyCode.DOWN) System.out.println("pressed DOWN");
+        if (keyCode == KeyCode.UP) player.setUp(true);
+        if (keyCode == KeyCode.DOWN) player.setDown(true);
+        if (keyCode == KeyCode.LEFT) player.setLeft(true);
+        if (keyCode == KeyCode.RIGHT) player.setRight(true);
     }
 
     public void keyReleased(KeyCode keyCode) {
-        if (keyCode == KeyCode.UP) System.out.println("released UP");
-        if (keyCode == KeyCode.DOWN) System.out.println("released DOWN");
+        if (keyCode == KeyCode.UP) player.setUp(false);
+        if (keyCode == KeyCode.DOWN) player.setDown(false);
+        if (keyCode == KeyCode.LEFT) player.setLeft(false);
+        if (keyCode == KeyCode.RIGHT) player.setRight(false);
     }
 }
