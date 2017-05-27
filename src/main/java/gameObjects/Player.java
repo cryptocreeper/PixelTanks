@@ -14,14 +14,14 @@ public class Player extends MovableTileMatrix {
     }
 
     private void initialize() {
-        speed = 5;
+        speed = 3;
     }
 
     private void getNextPosition() {
-//        if (left) x -= speed;
-//        else if (right) x += speed;
-//        else if (up) y -= speed;
-//        else if (down) y += speed;
+        if (moveLeft) x -= speed;
+        else if (moveRight) x += speed;
+        else if (moveUp) y -= speed;
+        else if (moveDown) y += speed;
     }
 
     public void update() {

@@ -17,13 +17,13 @@ public class LevelState extends GameState {
     }
 
     public void init() {
-        map = new GameMap("/tileSets/tileSet.png", "/maps/level.map");
-        player = new Player("/tileSets/tileSet.png", "/maps/player.map");
+        map = new GameMap("/tileSets/tileSet.png", "/matrices/level.map");
+        player = new Player("/tileSets/tileSet.png", "/matrices/player.map");
         player.setPosition(0, 0);
     }
 
     public void update() {
-
+        player.update();
     }
 
     public void draw(GraphicsContext graphicsContext) {
@@ -32,16 +32,16 @@ public class LevelState extends GameState {
     }
 
     public void keyPressed(KeyCode keyCode) {
-        if (keyCode == KeyCode.UP) player.setUp(true);
-        if (keyCode == KeyCode.DOWN) player.setDown(true);
-        if (keyCode == KeyCode.LEFT) player.setLeft(true);
-        if (keyCode == KeyCode.RIGHT) player.setRight(true);
+        if (keyCode == KeyCode.UP) player.setMoveUp(true);
+        if (keyCode == KeyCode.DOWN) player.setMoveDown(true);
+        if (keyCode == KeyCode.LEFT) player.setMoveLeft(true);
+        if (keyCode == KeyCode.RIGHT) player.setMoveRight(true);
     }
 
     public void keyReleased(KeyCode keyCode) {
-        if (keyCode == KeyCode.UP) player.setUp(false);
-        if (keyCode == KeyCode.DOWN) player.setDown(false);
-        if (keyCode == KeyCode.LEFT) player.setLeft(false);
-        if (keyCode == KeyCode.RIGHT) player.setRight(false);
+        if (keyCode == KeyCode.UP) player.setMoveUp(false);
+        if (keyCode == KeyCode.DOWN) player.setMoveDown(false);
+        if (keyCode == KeyCode.LEFT) player.setMoveLeft(false);
+        if (keyCode == KeyCode.RIGHT) player.setMoveRight(false);
     }
 }

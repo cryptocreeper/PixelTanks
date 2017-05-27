@@ -5,10 +5,10 @@ public abstract class MovableTileMatrix extends TileMatrix {
     // work only for square matrix
     protected int[][] facingUpMatrix;
 
-    private boolean left;
-    private boolean right;
-    private boolean up;
-    private boolean down;
+    protected boolean moveLeft;
+    protected boolean moveRight;
+    protected boolean moveUp;
+    protected boolean moveDown;
 
     public MovableTileMatrix(String tileSetImagePath, String tileMapPath) {
         super(tileSetImagePath, tileMapPath);
@@ -20,28 +20,30 @@ public abstract class MovableTileMatrix extends TileMatrix {
         for (int i = 0; i < matrix.length; i++)
             for (int j = 0; j < matrix.length; j++)
                 facingUpMatrix[i][j] = matrix[i][j];
-
-        setUp(true);
     }
 
-    public void setLeft(boolean left) {
-        this.left = left;
-        if (left) turnMatrixLeft();
+    public void setMoveLeft(boolean moveLeft) {
+        this.moveLeft = moveLeft;
+        if (!moveLeft) centerXInRow();
+        setFacing();
     }
 
-    public void setRight(boolean right) {
-        this.right = right;
-        if (right) turnMatrixRight();
+    public void setMoveRight(boolean moveRight) {
+        this.moveRight = moveRight;
+        if (!moveRight) centerXInRow();
+        setFacing();
     }
 
-    public void setUp(boolean up) {
-        this.up = up;
-        if (up) turnMatrixUp();
+    public void setMoveUp(boolean moveUp) {
+        this.moveUp = moveUp;
+        if (!moveUp) centerYInRow();
+        setFacing();
     }
 
-    public void setDown(boolean down) {
-        this.down = down;
-        if (down) turnMatrixDown();
+    public void setMoveDown(boolean moveDown) {
+        this.moveDown = moveDown;
+        if (!moveDown) centerYInRow();
+        setFacing();
     }
 
     private void turnMatrixLeft() {
@@ -66,5 +68,20 @@ public abstract class MovableTileMatrix extends TileMatrix {
         for (int i = 0; i < matrixHeight; i++)
             for (int j = 0; j < matrixWidth; j++)
                 matrix[matrix.length - 1 - i][matrix.length - 1 - j] = facingUpMatrix[i][j];
+    }
+
+    private void setFacing() {
+        if (moveLeft) turnMatrixLeft();
+        else if (moveRight) turnMatrixRight();
+        else if (moveUp) turnMatrixUp();
+        else if (moveDown) turnMatrixDown();
+    }
+
+    private void centerYInRow() {
+        y = y - (y % Tile.SIZE) + (Tile.SIZE / 2);
+    }
+
+    private void centerXInRow() {
+        x = x - (x % Tile.SIZE) + (Tile.SIZE / 2);
     }
 }
