@@ -2,6 +2,9 @@ package gameObjects.tileSet;
 
 public abstract class MovableTileMatrix extends TileMatrix {
 
+    protected int xNew;
+    protected int yNew;
+
     // work only for square matrix
     protected int[][] facingUpMatrix;
 
@@ -47,26 +50,26 @@ public abstract class MovableTileMatrix extends TileMatrix {
     }
 
     private void turnMatrixLeft() {
-        for (int i = 0; i < matrixHeight; i++)
-            for (int j = 0; j < matrixWidth; j++)
+        for (int i = 0; i < height; i++)
+            for (int j = 0; j < width; j++)
                 matrix[matrix.length - 1 - j][i] = facingUpMatrix[i][j];
     }
 
     private void turnMatrixRight() {
-        for (int i = 0; i < matrixHeight; i++)
-            for (int j = 0; j < matrixWidth; j++)
+        for (int i = 0; i < height; i++)
+            for (int j = 0; j < width; j++)
                 matrix[j][matrix.length - 1 - i] = facingUpMatrix[i][j];
     }
 
     private void turnMatrixUp() {
-        for (int i = 0; i < matrixHeight; i++)
-            for (int j = 0; j < matrixWidth; j++)
+        for (int i = 0; i < height; i++)
+            for (int j = 0; j < width; j++)
                 matrix[i][j] = facingUpMatrix[i][j];
     }
 
     private void turnMatrixDown() {
-        for (int i = 0; i < matrixHeight; i++)
-            for (int j = 0; j < matrixWidth; j++)
+        for (int i = 0; i < height; i++)
+            for (int j = 0; j < width; j++)
                 matrix[matrix.length - 1 - i][matrix.length - 1 - j] = facingUpMatrix[i][j];
     }
 

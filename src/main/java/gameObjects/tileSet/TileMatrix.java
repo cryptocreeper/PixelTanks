@@ -17,15 +17,19 @@ public abstract class TileMatrix {
     protected int x;
     protected int y;
 
+    // position on matrix
+    public int matrixX;
+    public int matrixY;
+
     // tile set image
     private Image tileSetImage;
     private int columnsInTileSetImage;
     private int rowsInTileSetImage;
 
     // numeric matrix
-    protected int[][] matrix;
-    protected int matrixWidth;
-    protected int matrixHeight;
+    public int[][] matrix;
+    public int width;
+    public int height;
 
     public TileMatrix(String tileSetImagePath, String tileMapPath) {
         initialize(tileSetImagePath, tileMapPath);
@@ -41,9 +45,9 @@ public abstract class TileMatrix {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         try {
-            matrixWidth = Integer.parseInt(bufferedReader.readLine());
-            matrixHeight = Integer.parseInt(bufferedReader.readLine());
-            matrix = new int[matrixHeight][matrixWidth];
+            width = Integer.parseInt(bufferedReader.readLine());
+            height = Integer.parseInt(bufferedReader.readLine());
+            matrix = new int[height][width];
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,11 +80,11 @@ public abstract class TileMatrix {
     private void loadMap(BufferedReader bufferedReader) {
         try {
             String delimiter = "\\s+";
-            for (int row = 0; row < matrixHeight; row++) {
+            for (int row = 0; row < height; row++) {
                 String line = bufferedReader.readLine();
                 String[] tokens = line.split(delimiter);
 
-                for (int column = 0; column < matrixWidth; column++) {
+                for (int column = 0; column < width; column++) {
                     matrix[row][column] = Integer.parseInt(tokens[column]);
                 }
             }
@@ -100,11 +104,18 @@ public abstract class TileMatrix {
     public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
+        matrixX = x / Tile.SIZE;
+        matrixY = y / Tile.SIZE;
     }
 
-    public void draw(GraphicsContext graphicsContext) {
-        for(int matrixRow = 0; matrixRow < matrixHeight; matrixRow++) {
-            for(int matrixColumn = 0; matrixColumn < matrixWidth; matrixColumn++) {
+    protected void update() {
+        matrixX = x / Tile.SIZE;
+        matrixY = y / Tile.SIZE;
+    }
+
+    protected void draw(GraphicsContext graphicsContext) {
+        for(int matrixRow = 0; matrixRow < height; matrixRow++) {
+            for(int matrixColumn = 0; matrixColumn < width; matrixColumn++) {
                 Tile tile = getTile(matrixRow, matrixColumn);
                 graphicsContext.drawImage(tile.getImage(),
                         (x / Tile.SIZE + matrixColumn) * Tile.SIZE, (y / Tile.SIZE + matrixRow) * Tile.SIZE);
