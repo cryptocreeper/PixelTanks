@@ -1,39 +1,29 @@
 package gameObjects;
 
 import gameObjects.tileSet.MovableTileMatrix;
-import gameObjects.tileSet.Tile;
-import gameObjects.tileSet.TileMatrix;
 import javafx.scene.canvas.GraphicsContext;
 
 public class Player extends MovableTileMatrix {
 
-    // movement
-    private int speed;
-
-    public Player(String tileSetImagePath, String tileMapPath) {
-        super(tileSetImagePath, tileMapPath);
-        initialize();
+    public Player(String tileSetImagePath, String tileMapPath, double speed) {
+        super(tileSetImagePath, tileMapPath, speed);
     }
 
-    private void initialize() {
-        speed = 5;
-    }
-
-    public boolean checkCollision(TileMatrix gameObjectMatrix) {
+    /*public boolean checkCollision(TileMatrix gameObjectMatrix) {
         // 1. Пересекаются ли прямоугольные области объектов
-        if (!(this.matrixX + (width - 1) >= gameObjectMatrix.matrixX &&
-                this.matrixX <= gameObjectMatrix.matrixX + (gameObjectMatrix.width - 1) &&
-                this.matrixY + (height - 1) >= gameObjectMatrix.matrixY &&
-                this.matrixY <= gameObjectMatrix.matrixY + (gameObjectMatrix.height - 1)))
+        if (!(this.xPosition + (width - 1) >= gameObjectMatrix.xPosition &&
+                this.xPosition <= gameObjectMatrix.xPosition + (gameObjectMatrix.width - 1) &&
+                this.yPosition + (height - 1) >= gameObjectMatrix.yPosition &&
+                this.yPosition <= gameObjectMatrix.yPosition + (gameObjectMatrix.height - 1)))
             return false;
 
         // 2. Находим пересечение областей
-        int xStart = matrixX > gameObjectMatrix.matrixX ? matrixX : gameObjectMatrix.matrixX;
-        int xEnd = matrixX + width - 1 < gameObjectMatrix.matrixX + gameObjectMatrix.width - 1 ?
-                matrixX + width - 1 : gameObjectMatrix.matrixX + gameObjectMatrix.width - 1;
-        int yStart = matrixY > gameObjectMatrix.matrixY ? matrixY : gameObjectMatrix.matrixY;
-        int yEnd = matrixY + height - 1 < gameObjectMatrix.matrixY + gameObjectMatrix.height - 1 ?
-                matrixY + height - 1 : gameObjectMatrix.matrixY + gameObjectMatrix.height - 1;
+        int xStart = xPosition > gameObjectMatrix.xPosition ? xPosition : gameObjectMatrix.xPosition;
+        int xEnd = xPosition + width - 1 < gameObjectMatrix.xPosition + gameObjectMatrix.width - 1 ?
+                xPosition + width - 1 : gameObjectMatrix.xPosition + gameObjectMatrix.width - 1;
+        int yStart = yPosition > gameObjectMatrix.yPosition ? yPosition : gameObjectMatrix.yPosition;
+        int yEnd = yPosition + height - 1 < gameObjectMatrix.yPosition + gameObjectMatrix.height - 1 ?
+                yPosition + height - 1 : gameObjectMatrix.yPosition + gameObjectMatrix.height - 1;
 
         // 3. Получаем две матрицы для сравнения
         int[][] partOfPlayerMatrix = getPartOfMatrixByGlobalCoords(this, xStart, xEnd, yStart, yEnd);
@@ -49,10 +39,10 @@ public class Player extends MovableTileMatrix {
     }
 
     private int[][] getPartOfMatrixByGlobalCoords(TileMatrix tileMatrix, int globalX1, int globalX2, int globalY1, int globalY2) {
-        int partX1 = globalX1 - tileMatrix.matrixX;
-        int partX2 = globalX2 - tileMatrix.matrixX;
-        int partY1 = globalY1 - tileMatrix.matrixY;
-        int partY2 = globalY2 - tileMatrix.matrixY;
+        int partX1 = globalX1 - tileMatrix.xPosition;
+        int partX2 = globalX2 - tileMatrix.xPosition;
+        int partY1 = globalY1 - tileMatrix.yPosition;
+        int partY2 = globalY2 - tileMatrix.yPosition;
 
         int width = partX2 - partX1 + 1;
         int height = partY2 - partY1 + 1;
@@ -64,13 +54,7 @@ public class Player extends MovableTileMatrix {
 
         return partOfMatrix;
     }
-
-    public void calculateNewPosition() {
-        if (moveLeft) xNew = x - speed;
-        else if (moveRight) xNew = x + speed;
-        else if (moveUp) yNew = y - speed;
-        else if (moveDown) yNew = y + speed;
-    }
+    */
 
     public void update() {
         super.update();

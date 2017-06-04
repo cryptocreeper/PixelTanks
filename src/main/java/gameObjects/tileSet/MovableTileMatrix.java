@@ -2,89 +2,194 @@ package gameObjects.tileSet;
 
 public abstract class MovableTileMatrix extends TileMatrix {
 
-    protected int xNew;
-    protected int yNew;
+    private double xShift;
+    private double yShift;
+    private double speed;
 
     // work only for square matrix
-    protected int[][] facingUpMatrix;
+    private Tile[][] facingUpMatrix;
 
-    protected boolean moveLeft;
-    protected boolean moveRight;
-    protected boolean moveUp;
-    protected boolean moveDown;
+    private boolean moveLeft;
+    private boolean moveRight;
+    private boolean moveUp;
+    private boolean moveDown;
 
-    public MovableTileMatrix(String tileSetImagePath, String tileMapPath) {
+    private boolean facingLeft;
+    private boolean facingRight;
+    private boolean facingUp;
+    private boolean facingDown;
+
+    private boolean moveUpdated;
+
+    public MovableTileMatrix(String tileSetImagePath, String tileMapPath, double speed) {
         super(tileSetImagePath, tileMapPath);
+        this.speed = speed;
+        centerXShift();
+        centerYShift();
         initFacing();
     }
 
     private void initFacing() {
-        facingUpMatrix = new int[matrix.length][matrix.length];
-        for (int i = 0; i < matrix.length; i++)
-            for (int j = 0; j < matrix.length; j++)
-                facingUpMatrix[i][j] = matrix[i][j];
+        facingUpMatrix = new Tile[tileMatrix.length][tileMatrix.length];
+        for (int i = 0; i < tileMatrix.length; i++)
+            for (int j = 0; j < tileMatrix.length; j++)
+                facingUpMatrix[i][j] = tileMatrix[i][j];
+        facingUp = true;
+    }
+
+    private void resetFacing() {
+        facingLeft = facingRight = facingUp = facingDown = false;
+    }
+
+    private void setFacingLeft() {
+        resetFacing();
+        facingLeft = true;
+        turnMatrixLeft();
+    }
+
+    private void setFacingRight() {
+        resetFacing();
+        facingRight = true;
+        turnMatrixRight();
+    }
+
+    private void setFacingUp() {
+        resetFacing();
+        facingUp = true;
+        turnMatrixUp();
+    }
+
+    private void setFacingDown() {
+        resetFacing();
+        facingDown = true;
+        turnMatrixDown();
     }
 
     public void setMoveLeft(boolean moveLeft) {
         this.moveLeft = moveLeft;
-        if (!moveLeft) centerXInRow();
-        setFacing();
+        if (!moveLeft) centerXShift();
     }
 
-    public void setMoveRight(boolean moveRight) {
-        this.moveRight = moveRight;
-        if (!moveRight) centerXInRow();
-        setFacing();
+    public void setMoveRight(boolean newMoveRight) {
+        this.moveRight = newMoveRight;
+        if (!newMoveRight) centerXShift();
     }
 
-    public void setMoveUp(boolean moveUp) {
-        this.moveUp = moveUp;
-        if (!moveUp) centerYInRow();
-        setFacing();
+    public void setMoveUp(boolean newMoveUp) {
+        this.moveUp = newMoveUp;
+        if (!newMoveUp) centerYShift();
     }
 
-    public void setMoveDown(boolean moveDown) {
-        this.moveDown = moveDown;
-        if (!moveDown) centerYInRow();
-        setFacing();
+    public void setMoveDown(boolean newMoveDown) {
+        this.moveDown = newMoveDown;
+        if (!newMoveDown) centerYShift();
     }
 
     private void turnMatrixLeft() {
         for (int i = 0; i < height; i++)
             for (int j = 0; j < width; j++)
-                matrix[matrix.length - 1 - j][i] = facingUpMatrix[i][j];
+                tileMatrix[tileMatrix.length - 1 - j][i] = facingUpMatrix[i][j];
     }
 
     private void turnMatrixRight() {
         for (int i = 0; i < height; i++)
             for (int j = 0; j < width; j++)
-                matrix[j][matrix.length - 1 - i] = facingUpMatrix[i][j];
+                tileMatrix[j][tileMatrix.length - 1 - i] = facingUpMatrix[i][j];
     }
 
     private void turnMatrixUp() {
         for (int i = 0; i < height; i++)
             for (int j = 0; j < width; j++)
-                matrix[i][j] = facingUpMatrix[i][j];
+                tileMatrix[i][j] = facingUpMatrix[i][j];
     }
 
     private void turnMatrixDown() {
         for (int i = 0; i < height; i++)
             for (int j = 0; j < width; j++)
-                matrix[matrix.length - 1 - i][matrix.length - 1 - j] = facingUpMatrix[i][j];
+                tileMatrix[tileMatrix.length - 1 - i][tileMatrix.length - 1 - j] = facingUpMatrix[i][j];
     }
 
-    private void setFacing() {
-        if (moveLeft) turnMatrixLeft();
-        else if (moveRight) turnMatrixRight();
-        else if (moveUp) turnMatrixUp();
-        else if (moveDown) turnMatrixDown();
+    private void centerYShift() {
+        yShift = 0.5;
     }
 
-    private void centerYInRow() {
-        y = y - (y % Tile.SIZE) + (Tile.SIZE / 2);
+    private void centerXShift() {
+        xShift = 0.5;
     }
 
-    private void centerXInRow() {
-        x = x - (x % Tile.SIZE) + (Tile.SIZE / 2);
+    private void handleMoveLeft() {
+        if (!moveUpdated && moveLeft) {
+            if (!facingLeft) setFacingLeft();
+            moveLeft();
+        }
+    }
+
+    private void handleMoveRight() {
+        if (!moveUpdated && moveRight) {
+            if (!facingRight) setFacingRight();
+            moveRight();
+        }
+    }
+
+    private void handleMoveUp() {
+        if (!moveUpdated && moveUp) {
+            if (!facingUp) setFacingUp();
+            moveUp();
+        }
+    }
+
+    private void handleMoveDown() {
+        if (!moveUpdated && moveDown) {
+            if (!facingDown) setFacingDown();
+            moveDown();
+        }
+    }
+
+    private void moveLeft() {
+        xShift -= speed;
+        if (xShift < 0) {
+            int xPositionShift = (int)-xShift + 1;
+            xShift = 1 + (xShift % 1);
+            setPosition(xPosition - xPositionShift, yPosition);
+        }
+        moveUpdated = true;
+    }
+
+    private void moveRight() {
+        xShift += speed;
+        if (xShift > 0) {
+            int xPositionShift = (int)xShift;
+            xShift = xShift % 1;
+            setPosition(xPosition + xPositionShift, yPosition);
+        }
+        moveUpdated = true;
+    }
+
+    private void moveUp() {
+        yShift -= speed;
+        if (yShift < 0) {
+            int yPositionShift = (int)-yShift + 1;
+            yShift = 1 + (yShift % 1);
+            setPosition(xPosition, yPosition - yPositionShift);
+        }
+        moveUpdated = true;
+    }
+
+    private void moveDown() {
+        yShift += speed;
+        if (yShift > 0) {
+            int yPositionShift = (int)yShift;
+            yShift = yShift % 1;
+            setPosition(xPosition, yPosition + yPositionShift);
+        }
+        moveUpdated = true;
+    }
+
+    public void update() {
+        moveUpdated = false;
+        handleMoveLeft();
+        handleMoveRight();
+        handleMoveUp();
+        handleMoveDown();
     }
 }

@@ -18,9 +18,8 @@ public class LevelState extends GameState {
 
     public void init() {
         map = new GameMap("/tileSets/tileSet.png", "/matrices/level.map");
-        player = new Player("/tileSets/tileSet.png", "/matrices/player.map");
-        player.setPosition(100, 200);
-        System.out.println("Player collision with map: " + player.checkCollision(map));
+        player = new Player("/tileSets/tileSet.png", "/matrices/player.map", 0.2);
+        player.setPosition(1, 1);
     }
 
     public void update() {
