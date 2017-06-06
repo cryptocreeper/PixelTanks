@@ -30,10 +30,10 @@ public abstract class MovableTileMatrix extends TileMatrix {
     }
 
     private void initFacing() {
-        facingUpMatrix = new Tile[tileMatrix.length][tileMatrix.length];
-        for (int i = 0; i < tileMatrix.length; i++)
-            for (int j = 0; j < tileMatrix.length; j++)
-                facingUpMatrix[i][j] = tileMatrix[i][j];
+        facingUpMatrix = new Tile[matrix.length][matrix.length];
+        for (int i = 0; i < matrix.length; i++)
+            for (int j = 0; j < matrix.length; j++)
+                facingUpMatrix[i][j] = matrix[i][j];
         facingUp = true;
     }
 
@@ -88,25 +88,25 @@ public abstract class MovableTileMatrix extends TileMatrix {
     private void turnMatrixLeft() {
         for (int i = 0; i < height; i++)
             for (int j = 0; j < width; j++)
-                tileMatrix[tileMatrix.length - 1 - j][i] = facingUpMatrix[i][j];
+                matrix[matrix.length - 1 - j][i] = facingUpMatrix[i][j];
     }
 
     private void turnMatrixRight() {
         for (int i = 0; i < height; i++)
             for (int j = 0; j < width; j++)
-                tileMatrix[j][tileMatrix.length - 1 - i] = facingUpMatrix[i][j];
+                matrix[j][matrix.length - 1 - i] = facingUpMatrix[i][j];
     }
 
     private void turnMatrixUp() {
         for (int i = 0; i < height; i++)
             for (int j = 0; j < width; j++)
-                tileMatrix[i][j] = facingUpMatrix[i][j];
+                matrix[i][j] = facingUpMatrix[i][j];
     }
 
     private void turnMatrixDown() {
         for (int i = 0; i < height; i++)
             for (int j = 0; j < width; j++)
-                tileMatrix[tileMatrix.length - 1 - i][tileMatrix.length - 1 - j] = facingUpMatrix[i][j];
+                matrix[matrix.length - 1 - i][matrix.length - 1 - j] = facingUpMatrix[i][j];
     }
 
     private void centerYShift() {

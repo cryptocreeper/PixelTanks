@@ -13,7 +13,7 @@ public abstract class TileMatrix {
 
     private TileTypes tileTypes;
 
-    protected Tile[][] tileMatrix;
+    protected Tile[][] matrix;
     protected int xPosition;
     protected int yPosition;
     protected int width;
@@ -32,7 +32,7 @@ public abstract class TileMatrix {
         try {
             width = Integer.parseInt(bufferedReader.readLine());
             height = Integer.parseInt(bufferedReader.readLine());
-            tileMatrix = new Tile[height][width];
+            matrix = new Tile[height][width];
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -49,7 +49,7 @@ public abstract class TileMatrix {
                 String[] tokens = line.split(delimiter);
 
                 for (int column = 0; column < width; column++) {
-                    tileMatrix[row][column] = tileTypes.get(Integer.parseInt(tokens[column]));
+                    matrix[row][column] = tileTypes.get(Integer.parseInt(tokens[column]));
                 }
             }
         }
@@ -61,7 +61,7 @@ public abstract class TileMatrix {
     protected void draw(GraphicsContext graphicsContext) {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                graphicsContext.drawImage(tileMatrix[y][x].getImage(),
+                graphicsContext.drawImage(matrix[y][x].getImage(),
                         (xPosition + x) * Tile.SIZE, (yPosition + y) * Tile.SIZE);
             }
         }
@@ -86,6 +86,52 @@ public abstract class TileMatrix {
 
     public int getHeight() {
         return height;
+    }
+
+    public boolean checkCollision(TileMatrix anotherMatrix) {
+        // 1. Пересекаются ли прямоугольные области объектов
+        if (!(xPosition + (width - 1) >= anotherMatrix.xPosition &&
+                xPosition <= anotherMatrix.xPosition + (anotherMatrix.width - 1) &&
+                yPosition + (height - 1) >= anotherMatrix.yPosition &&
+                yPosition <= anotherMatrix.yPosition + (anotherMatrix.height - 1)))
+            return false;
+
+        // 2. Находим пересечение областей
+        int xStart = xPosition > anotherMatrix.xPosition ? xPosition : anotherMatrix.xPosition;
+        int xEnd = xPosition + width - 1 < anotherMatrix.xPosition + anotherMatrix.width - 1 ?
+                xPosition + width - 1 : anotherMatrix.xPosition + anotherMatrix.width - 1;
+        int yStart = yPosition > anotherMatrix.yPosition ? yPosition : anotherMatrix.yPosition;
+        int yEnd = yPosition + height - 1 < anotherMatrix.yPosition + anotherMatrix.height - 1 ?
+                yPosition + height - 1 : anotherMatrix.yPosition + anotherMatrix.height - 1;
+
+        // 3. Получаем две матрицы для сравнения
+        Tile[][] partOfPlayerMatrix = getPartOfMatrixByCoordinates(this, xStart, xEnd, yStart, yEnd);
+        Tile[][] partOfGameObjectMatrix = getPartOfMatrixByCoordinates(anotherMatrix, xStart, xEnd, yStart, yEnd);
+
+        // 4. Сравнеивам матрицы на предмет коллизий
+        for (int i = 0; i < partOfPlayerMatrix.length; i++)
+            for (int j = 0; j < partOfPlayerMatrix[0].length; j++)
+                if (partOfPlayerMatrix[i][j].getType() == Tile.BLOCKED && partOfGameObjectMatrix[i][j].getType() == Tile.BLOCKED)
+                    return true;
+
+        return false;
+    }
+
+    private Tile[][] getPartOfMatrixByCoordinates(TileMatrix tileMatrix, int x1, int x2, int y1, int y2) {
+        int partX1 = x1 - tileMatrix.xPosition;
+        int partX2 = x2 - tileMatrix.xPosition;
+        int partY1 = y1 - tileMatrix.yPosition;
+        int partY2 = y2 - tileMatrix.yPosition;
+
+        int width = partX2 - partX1 + 1;
+        int height = partY2 - partY1 + 1;
+
+        Tile[][] partOfMatrix = new Tile[height][width];
+        for (int i = partY1, iPart = 0; i <= partY2; i++, iPart++)
+            for (int j = partX1, jPart = 0; j <= partX2; j++, jPart++)
+                partOfMatrix[iPart][jPart] = tileMatrix.matrix[i][j];
+
+        return partOfMatrix;
     }
 
     private class TileTypes {
