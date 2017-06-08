@@ -1,25 +1,30 @@
 package gameObjects.tileSet;
 
+import java.util.List;
+
 public abstract class MovableTileMatrix extends TileMatrix {
+
+    private int xPositionOld;
+    private int yPositionOld;
 
     private double xShift;
     private double yShift;
     private double speed;
 
-    // work only for square matrix
-    private Tile[][] facingUpMatrix;
-
     private boolean moveLeft;
     private boolean moveRight;
     private boolean moveUp;
     private boolean moveDown;
+    private boolean moveUpdated;
 
+    // work only for square matrix
+    private Tile[][] facingUpMatrix;
     private boolean facingLeft;
     private boolean facingRight;
     private boolean facingUp;
     private boolean facingDown;
 
-    private boolean moveUpdated;
+    private List<TileMatrix> gameObjects;
 
     public MovableTileMatrix(String tileSetImagePath, String tileMapPath, double speed) {
         super(tileSetImagePath, tileMapPath);
@@ -85,6 +90,10 @@ public abstract class MovableTileMatrix extends TileMatrix {
         if (!newMoveDown) centerYShift();
     }
 
+    public void setGameObjects(List<TileMatrix> gameObjects) {
+        this.gameObjects = gameObjects;
+    }
+
     private void turnMatrixLeft() {
         for (int i = 0; i < height; i++)
             for (int j = 0; j < width; j++)
@@ -148,19 +157,25 @@ public abstract class MovableTileMatrix extends TileMatrix {
     private void moveLeft() {
         xShift -= speed;
         if (xShift < 0) {
-            int xPositionShift = (int)-xShift + 1;
+            xPosition -= (int)-xShift + 1;
             xShift = 1 + (xShift % 1);
-            setPosition(xPosition - xPositionShift, yPosition);
+            if (isCollide()) {
+                xShift = 0;
+                xPosition = xPositionOld;
+            }
         }
         moveUpdated = true;
     }
 
     private void moveRight() {
         xShift += speed;
-        if (xShift > 0) {
-            int xPositionShift = (int)xShift;
+        if (xShift > 1) {
+            xPosition += (int)xShift;
             xShift = xShift % 1;
-            setPosition(xPosition + xPositionShift, yPosition);
+            if (isCollide()) {
+                xShift = 1;
+                xPosition = xPositionOld;
+            }
         }
         moveUpdated = true;
     }
@@ -168,25 +183,48 @@ public abstract class MovableTileMatrix extends TileMatrix {
     private void moveUp() {
         yShift -= speed;
         if (yShift < 0) {
-            int yPositionShift = (int)-yShift + 1;
+            yPosition -= (int)-yShift + 1;
             yShift = 1 + (yShift % 1);
-            setPosition(xPosition, yPosition - yPositionShift);
+            if (isCollide()) {
+                yShift = 0;
+                yPosition = yPositionOld;
+            }
         }
         moveUpdated = true;
     }
 
     private void moveDown() {
         yShift += speed;
-        if (yShift > 0) {
-            int yPositionShift = (int)yShift;
+        if (yShift > 1) {
+            yPosition += (int)yShift;
             yShift = yShift % 1;
-            setPosition(xPosition, yPosition + yPositionShift);
+            if (isCollide()) {
+                yShift = 1;
+                yPosition = yPositionOld;
+            }
         }
         moveUpdated = true;
     }
 
+    private boolean isCollide() {
+        if (gameObjects == null) return false;
+
+        for (TileMatrix gameObject : gameObjects) {
+            if (gameObject == this) continue;
+            if (checkCollision(gameObject)) return true;
+        }
+
+        return false;
+    }
+
+    private void saveOldPosition() {
+        xPositionOld = xPosition;
+        yPositionOld = yPosition;
+    }
+
     public void update() {
         moveUpdated = false;
+        saveOldPosition();
         handleMoveLeft();
         handleMoveRight();
         handleMoveUp();
