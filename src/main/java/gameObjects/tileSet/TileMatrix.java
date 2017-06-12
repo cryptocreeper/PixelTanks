@@ -1,9 +1,12 @@
 package gameObjects.tileSet;
 
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -158,6 +161,8 @@ public abstract class TileMatrix {
             try {
                 Canvas tileCanvas = new Canvas(Tile.SIZE, Tile.SIZE);
                 GraphicsContext graphicsContext = tileCanvas.getGraphicsContext2D();
+                SnapshotParameters snapshotParameters = new SnapshotParameters();
+                snapshotParameters.setFill(Color.TRANSPARENT);
                 WritableImage tileImage;
 
                 for (int column = 0; column < columnsInTileSetImage; column++) {
@@ -165,7 +170,7 @@ public abstract class TileMatrix {
                         graphicsContext.drawImage(tileSetImage,
                                 column * Tile.SIZE, row * Tile.SIZE, Tile.SIZE, Tile.SIZE,
                                 0, 0, Tile.SIZE, Tile.SIZE);
-                        tileImage = tileCanvas.snapshot(null, new WritableImage(Tile.SIZE, Tile.SIZE));
+                        tileImage = tileCanvas.snapshot(snapshotParameters, new WritableImage(Tile.SIZE, Tile.SIZE));
                         tileTypes[row][column] = new Tile(tileImage, row);
                     }
                 }
