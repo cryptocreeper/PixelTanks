@@ -7,6 +7,7 @@ import stateManagement.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class LevelState extends GameState {
@@ -21,14 +22,12 @@ public class LevelState extends GameState {
     }
 
     public void init() {
-        map = new GameMap("/tileSets/tileSet.png", "/matrices/level.map");
-        player = new Player("/tileSets/tileSet.png", "/matrices/player.map", 0.2);
         levelObjects = new ArrayList<TileMatrix>();
-        levelObjects.add(map);
-        levelObjects.add(player);
-
-        player.setGameObjects(levelObjects);
+        map = new GameMap("/tileSets/tileSet.png", "/matrices/level.map");
+        player = new Player("/tileSets/tileSet.png", "/matrices/player.map", 0.2, map, levelObjects);
         player.setPosition(1, 1);
+
+        Collections.addAll(levelObjects, map, player);
     }
 
     public void update() {

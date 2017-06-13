@@ -24,11 +24,15 @@ public abstract class MovableTileMatrix extends TileMatrix {
     private boolean facingUp;
     private boolean facingDown;
 
+    private TileMatrix map;
     private List<TileMatrix> gameObjects;
 
-    public MovableTileMatrix(String tileSetImagePath, String tileMapPath, double speed) {
+    public MovableTileMatrix(String tileSetImagePath, String tileMapPath, double speed, TileMatrix map,
+                             List<TileMatrix> gameObjects) {
         super(tileSetImagePath, tileMapPath);
         this.speed = speed;
+        this.map = map;
+        this.gameObjects = gameObjects;
         centerXShift();
         centerYShift();
         initFacing();
@@ -88,10 +92,6 @@ public abstract class MovableTileMatrix extends TileMatrix {
     public void setMoveDown(boolean newMoveDown) {
         this.moveDown = newMoveDown;
         if (!newMoveDown) centerYShift();
-    }
-
-    public void setGameObjects(List<TileMatrix> gameObjects) {
-        this.gameObjects = gameObjects;
     }
 
     private void turnMatrixLeft() {
@@ -159,7 +159,7 @@ public abstract class MovableTileMatrix extends TileMatrix {
         if (xShift < 0) {
             xPosition -= (int)-xShift + 1;
             xShift = 1 + (xShift % 1);
-            if (isCollide()) {
+            if (isCollide() || isOutsideTheMap()) {
                 xShift = 0;
                 xPosition = xPositionOld;
             }
@@ -172,7 +172,7 @@ public abstract class MovableTileMatrix extends TileMatrix {
         if (xShift > 1) {
             xPosition += (int)xShift;
             xShift = xShift % 1;
-            if (isCollide()) {
+            if (isCollide() || isOutsideTheMap()) {
                 xShift = 1;
                 xPosition = xPositionOld;
             }
@@ -185,7 +185,7 @@ public abstract class MovableTileMatrix extends TileMatrix {
         if (yShift < 0) {
             yPosition -= (int)-yShift + 1;
             yShift = 1 + (yShift % 1);
-            if (isCollide()) {
+            if (isCollide() || isOutsideTheMap()) {
                 yShift = 0;
                 yPosition = yPositionOld;
             }
@@ -198,7 +198,7 @@ public abstract class MovableTileMatrix extends TileMatrix {
         if (yShift > 1) {
             yPosition += (int)yShift;
             yShift = yShift % 1;
-            if (isCollide()) {
+            if (isCollide() || isOutsideTheMap()) {
                 yShift = 1;
                 yPosition = yPositionOld;
             }
@@ -215,6 +215,14 @@ public abstract class MovableTileMatrix extends TileMatrix {
         }
 
         return false;
+    }
+
+    private boolean isOutsideTheMap() {
+        if (map == null) return false;
+
+        return xPosition < 0 || yPosition < 0
+                || xPosition + width > map.getWidth()
+                || yPosition + height > map.getHeight();
     }
 
     private void saveOldPosition() {
